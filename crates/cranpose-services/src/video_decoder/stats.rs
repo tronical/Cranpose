@@ -30,22 +30,8 @@ pub struct DecoderStats {
     pub max_decode: Duration,
 }
 
-#[cfg(any(
-    target_os = "android",
-    target_os = "macos",
-    target_os = "ios",
-    target_os = "windows",
-    target_os = "linux"
-))]
 pub(super) use counters::StatsCounters;
 
-#[cfg(any(
-    target_os = "android",
-    target_os = "macos",
-    target_os = "ios",
-    target_os = "windows",
-    target_os = "linux"
-))]
 mod counters {
     use std::time::Duration;
 
@@ -67,10 +53,12 @@ mod counters {
     }
 
     impl StatsCounters {
+        #[cfg(any(target_os = "android", target_os = "macos", target_os = "ios"))]
         pub(crate) fn submitted(&self) {
             self.submitted.fetch_add(1, Relaxed);
         }
 
+        #[cfg(any(target_os = "android", target_os = "macos", target_os = "ios"))]
         pub(crate) fn refused(&self) {
             self.refused.fetch_add(1, Relaxed);
         }

@@ -1,13 +1,5 @@
 //! The decoder and the handle that receives its pictures.
 
-#[cfg(any(
-    target_os = "android",
-    target_os = "macos",
-    target_os = "ios",
-    target_os = "windows",
-    target_os = "linux"
-))]
-use super::frame_queue::Frames;
 #[cfg(target_os = "android")]
 use super::media_codec::Backend;
 #[cfg(not(any(
@@ -17,7 +9,7 @@ use super::media_codec::Backend;
     target_os = "windows",
     target_os = "linux"
 )))]
-use super::unavailable::{Backend, Frames};
+use super::unavailable::Backend;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use super::video_toolbox::Backend;
 #[cfg(any(target_os = "windows", target_os = "linux"))]
@@ -25,6 +17,7 @@ use super::worker_mailbox::ThreadedBackend as Backend;
 use super::{
     AccessUnit, DecoderCapabilities, DecoderConfig, DecoderError, DecoderStats, FrameInfo,
     VideoCodec, VideoFrame, capabilities,
+    frame_queue::{FrameProducer, Frames},
 };
 
 /// A hardware video decoder for one stream.
@@ -107,6 +100,13 @@ pub struct DecodedFrames {
 }
 
 impl DecodedFrames {
+    /// Creates a bounded `(FrameProducer, DecodedFrames)` pair for a platform [`PlayerBackend`](crate::PlayerBackend)
+    /// that delivers zero-copy GPU [`VideoFrame`]s directly to `PlayerSurface`.
+    pub fn channel(depth: usize) -> (FrameProducer, Self) {
+        let (producer, frames) = FrameProducer::channel(depth);
+        (producer, Self { frames })
+    }
+
     /// The oldest picture that the decoder has output, if the output is
     /// [`DecoderOutput::Frames`](super::DecoderOutput::Frames).
     pub fn next_frame(&self) -> Option<VideoFrame> {

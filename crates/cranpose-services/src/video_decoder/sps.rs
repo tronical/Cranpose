@@ -21,7 +21,7 @@ impl StreamMetadata {
         match codec {
             VideoCodec::H264 => parse_h264_sps(nal),
             VideoCodec::Hevc => parse_hevc_sps(nal),
-            VideoCodec::Av1 => None,
+            VideoCodec::Av1 | VideoCodec::Vp9 => None,
         }
     }
 }

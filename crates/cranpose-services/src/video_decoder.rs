@@ -35,13 +35,6 @@ mod decoder;
 mod decompression_session;
 mod error;
 mod frame;
-#[cfg(any(
-    target_os = "android",
-    target_os = "macos",
-    target_os = "ios",
-    target_os = "windows",
-    target_os = "linux"
-))]
 mod frame_queue;
 #[cfg(target_os = "android")]
 mod image_reader;
@@ -111,9 +104,12 @@ pub use d3d11_frame::{DxgiPixelFormat, DxgiSharedFrame};
 pub use decoder::{DecodedFrames, VideoDecoder};
 pub use error::DecoderError;
 pub use frame::{CropRect, FrameInfo, VideoFrame};
+pub use frame_queue::FrameProducer;
 #[cfg(target_os = "linux")]
 pub use linux_frame::{
     DmaBufFrame, DmaBufPlane, LinuxFrameMemory, LinuxPixelFormat, SoftwareBiPlanarPlanes,
 };
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+pub use pixel_buffer::video_frame_from_pixel_buffer_ptr;
 pub use split_access_units::split_access_units;
 pub use stats::DecoderStats;

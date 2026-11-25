@@ -44,7 +44,7 @@ pub(crate) fn start(
 fn play(codec: VideoCodec, rate: u32, mut decoder: VideoDecoder, stop: &AtomicBool) {
     let bytes = match codec {
         VideoCodec::Hevc => HEVC_CLIP,
-        VideoCodec::H264 | VideoCodec::Av1 => H264_CLIP,
+        VideoCodec::H264 | VideoCodec::Av1 | VideoCodec::Vp9 => H264_CLIP,
     };
     let units = split_access_units(codec, bytes);
     let step = Duration::from_secs(1) / rate;
