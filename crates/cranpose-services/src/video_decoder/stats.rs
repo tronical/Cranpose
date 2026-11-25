@@ -53,12 +53,24 @@ mod counters {
     }
 
     impl StatsCounters {
-        #[cfg(any(target_os = "android", target_os = "macos", target_os = "ios"))]
+        #[cfg(any(
+            target_os = "android",
+            target_os = "macos",
+            target_os = "ios",
+            target_os = "windows",
+            target_os = "linux"
+        ))]
         pub(crate) fn submitted(&self) {
             self.submitted.fetch_add(1, Relaxed);
         }
 
-        #[cfg(any(target_os = "android", target_os = "macos", target_os = "ios"))]
+        #[cfg(any(
+            target_os = "android",
+            target_os = "macos",
+            target_os = "ios",
+            target_os = "windows",
+            target_os = "linux"
+        ))]
         pub(crate) fn refused(&self) {
             self.refused.fetch_add(1, Relaxed);
         }
